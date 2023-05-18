@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+</head>
+
+<body>
+  <h1 class="text-center mt-5">Todo List</h1>
+  <div class="container justify-content-center" data-controller="task">
+    <%= form_with(model: @task, data: { controller: "task" , action: "ajax:beforeSend->task#create" }) do |form| %>
+      <div class="input-group mb-3">
+        <%= form.text_field :task, class: "form-control" , placeholder: "Enter Task" , required: true %>
+          <button type="submit" class="btn btn-outline-secondary">Add</button>
+      </div>
+
+      <% end %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Complete</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody data-task-target="output">
+            <% @tasks.each do |task| %>
+              <tr <%="class='completed'" if task.completed? %>>
+                <td>
+                  <%= task.task %>
+                </td>
+                <td>
+                  <% if task.completed? %>
+                    <span class="btn btn-success">Completed</span>
+                    <% else %>
+                      <button class="btn btn-secondary" data-action="click->task#complete"
+                        data-task-id="<%= task.id %>">
+                        Mark as Completed
+                      </button>
+                      <% end %>
+                </td>
+
+                <td>
+                  <button class="btn btn-danger" data-action="click->task#remove" data-task-id="<%= task.id %>">
+                    Remove
+                  </button>
+                </td>
+              </tr>
+              <% end %>
+          </tbody>
+        </table>
+  </div>
+</body>
+
+</html>
